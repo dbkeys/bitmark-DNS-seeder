@@ -45,7 +45,6 @@
 // Bitmark: If testnet, require 0 blocks  otherwise 465,639 (as of 1530104867: Wed Jun 27 13:07:47 UTC 2018)
 // Bitmark block 465639 hash: 3a7faa44a2898f3d9be0de967904640e23026fd9fa0cee4ae89c20c7030bfdd5
 
-*/
 
 static inline int GetRequireHeight(const bool testnet = fTestNet)
 {

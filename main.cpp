@@ -17,7 +17,8 @@ using namespace std;
 // [Major].[Minor].[Patch].[Build].[letter]
 // [0].[1].[1].[8].[a]
 // November 29, 2020: v0.1.1.1.a  for Bitmark v0.9.7.3
-const char* dnsseeder_version = "0.1.1.1.a\0x0"
+const char* dnsseeder_version = "0.1.1.1.a\0x0";
+
 bool fTestNet = false;
 
 class CDnsSeedOpts {
@@ -459,6 +460,7 @@ int main(int argc, char **argv) {
   setbuf(stdout, NULL);
   CDnsSeedOpts opts;
   opts.ParseCommandLine(argc, argv);
+  printf("Bitmark DNS Seeder v0.1.1.1a\n");
   printf("Supporting whitelisted filters: ");
   for (std::set<uint64_t>::const_iterator it = opts.filter_whitelist.begin(); it != opts.filter_whitelist.end(); it++) {
       if (it != opts.filter_whitelist.begin()) {
