@@ -14,6 +14,10 @@
 
 using namespace std;
 
+// [Major].[Minor].[Patch].[Build].[letter]
+// [0].[1].[1].[8].[a]
+// November 29, 2020: v0.1.1.1.a  for Bitmark v0.9.7.3
+const char* dnsseeder_version = "0.1.1.1.a\0x0"
 bool fTestNet = false;
 
 class CDnsSeedOpts {
@@ -35,7 +39,7 @@ public:
   CDnsSeedOpts() : nThreads(96), nDnsThreads(4), nPort(53), mbox(NULL), ns(NULL), host(NULL), tor(NULL), fUseTestNet(false), fWipeBan(false), fWipeIgnore(false), ipv4_proxy(NULL), ipv6_proxy(NULL) {}
 
   void ParseCommandLine(int argc, char **argv) {
-    static const char *help = "Bitcoin-seeder\n"
+    static const char *help = "Bitmark-seeder\n"
                               "Usage: %s -h <host> -n <ns> [-m <mbox>] [-t <threads>] [-p <port>]\n"
                               "\n"
                               "Options:\n"
@@ -402,18 +406,41 @@ extern "C" void* ThreadStats(void*) {
   return nullptr;
 }
 
-static const string mainnet_seeds[] = {"dnsseed.bluematt.me", "bitseed.xf2.org", "dnsseed.bitcoin.dashjr.org", "seed.bitcoin.sipa.be", ""};
-static const string testnet_seeds[] = {"testnet-seed.alexykot.me",
-                                       "testnet-seed.bitcoin.petertodd.org",
-                                       "testnet-seed.bluematt.me",
-                                       "testnet-seed.bitcoin.schildbach.de",
+//  These should be regular P2P coin nodes which serve as "fixed seed nodes", 
+static const string mainnet_seeds[] =  {"seed.bitmark.co",
+					"de.bitmark.co",
+					"us.bitmark.co",
+                                        "eu.bitmark.io",
+                                        "ge.bitmark.io",
+					"jp.bitmark.io",
+					"mx.bitmark.io",
+                                        "us.bitmark.io",
+                                        "uk.bitmark.one",
+                                        ""};
+
+// Bitcoin Examples
+//static const string mainnet_seeds[] = {"dnsseed.bluematt.me", "bitseed.xf2.org", "dnsseed.bitcoin.dashjr.org", "seed.bitcoin.sipa.be", ""};
+
+// Bitmark (MARKS) (BTM)  
+static const string testnet_seeds[] = { "tz.bitmark.co",
+					"tz.bitmark.guru",
+					"tz.bitmark.io",
+                                       	"tz.bitmark.mx",
+					"tz.bitmark.one",
                                        ""};
+// Bitcoin Examples
+//static const string testnet_seeds[] = {"testnet-seed.alexykot.me",
+//                                       "testnet-seed.bitcoin.petertodd.org",
+//                                       "testnet-seed.bluematt.me",
+//                                       "testnet-seed.bitcoin.schildbach.de",
+//                                       ""};
 static const string *seeds = mainnet_seeds;
 
 extern "C" void* ThreadSeeder(void*) {
-  if (!fTestNet){
-    db.Add(CService("kjy2eqzk4zwi5zd3.onion", 8333), true);
-  }
+  // Bitmark - no TOR / Onion hidden service nodes yet; Nov. 29, 2020
+  //if (!fTestNet){
+  //  db.Add(CService("kjy2eqzk4zwi5zd3.onion", 8333), true);
+  // }
   do {
     for (int i=0; seeds[i] != ""; i++) {
       vector<CNetAddr> ips;
@@ -483,6 +510,7 @@ int main(int argc, char **argv) {
     fprintf(stderr, "No e-mail address set. Please use -m.\n");
     exit(1);
   }
+  // TODO: Outpu file-name customizations ...
   FILE *f = fopen("dnsseed.dat","r");
   if (f) {
     printf("Loading dnsseed.dat...");

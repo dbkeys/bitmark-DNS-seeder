@@ -18,7 +18,7 @@
 extern bool fTestNet;
 static inline unsigned short GetDefaultPort(const bool testnet = fTestNet)
 {
-    return testnet ? 18333 : 8333;
+    return testnet ? 19265 : 9265;
 }
 
 //
@@ -59,6 +59,7 @@ class CMessageHeader
 
 enum
 {
+    // TODO: Analyze ...
     NODE_NETWORK = (1 << 0),
     NODE_BLOOM = (1 << 2),
     NODE_WITNESS = (1 << 3),
@@ -82,6 +83,7 @@ class CAddress : public CService
                  pthis->Init();
              if (nType & SER_DISK)
              READWRITE(nVersion);
+		// TODO: magic number 31402 ??
              if ((nType & SER_DISK) || (nVersion >= 31402 && !(nType & SER_GETHASH)))
              READWRITE(nTime);
              READWRITE(nServices);

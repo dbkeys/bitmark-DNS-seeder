@@ -12,11 +12,44 @@
 
 #define MIN_RETRY 1000
 
-#define REQUIRE_VERSION 70001
+// REQUIRE Protocol Version
+#define REQUIRE_VERSION 70002
+/*				Bitmark		Bitmark		Bitcoin
+    <coin>-cli getinfo					     // Call deprecated	
+	version			90702		90500		-
+	protocolversion		70003		70002		-
+	walletversion		60000		60000		-
+
+     <coin>-cli getnetworkinfo
+	version			90702				180000
+	subversion						"/Satoshi:0.18.0/"
+	protocolversion		70003				70015
+
+     <coin>-cli getwalletinfo
+	walletversion		60000				169900
+
+	----------------------------------------------------------------------------
+        version:
+                The version number of this bitmark-qt or bitmarkd program itself. Both of are equivalent. -qt is simply the graphical user interface version
+
+        protocolversion: 
+                The version of the bitmark network protocol supported by this client.
+
+        walletversion: 
+                The version of the wallet.dat file. Wallet.dat contains bitmark addresses and public & private key pairs for these addresses. There is additional data on the wallet. Care must be taken to not restore from an old wallet backup. New addresses generated in the wallet since the old backup was made will not exist in the old backup! ( Source: https://en.bitcoin.it/wiki/Wallet )
+
+*/
+
+// Bitcoin: If testnet require 10,000 blocks : 11381 on testnet4 as of Nov26'17, otherwise 360,000
+
+// Bitmark: If testnet, require 0 blocks  otherwise 465,639 (as of 1530104867: Wed Jun 27 13:07:47 UTC 2018)
+// Bitmark block 465639 hash: 3a7faa44a2898f3d9be0de967904640e23026fd9fa0cee4ae89c20c7030bfdd5
+
+*/
 
 static inline int GetRequireHeight(const bool testnet = fTestNet)
 {
-    return testnet ? 500000 : 350000;
+    return testnet ? 0 : 1069363;
 }
 
 std::string static inline ToString(const CService &ip) {
@@ -99,13 +132,34 @@ public:
     ret.services = services;
     return ret;
   }
-  
+ 
+  // Node Quality Discriminator Function 
   bool IsGood() const {
     if (ip.GetPort() != GetDefaultPort()) return false;
     if (!(services & NODE_NETWORK)) return false;
     if (!ip.IsRoutable()) return false;
     if (clientVersion && clientVersion < REQUIRE_VERSION) return false;
     if (blocks && blocks < GetRequireHeight()) return false;
+
+/* 
+https://stackoverflow.com/questions/2340281/check-if-a-string-contains-a-string-in-c
+        if (s1.find(s2) != std::string::npos) {
+            std::cout << "found!" << '\n';
+        }
+        Note: "found!" will be printed if s2 is a substring of s1, both s1 and s2 are of type std::string.
+*/
+
+//    Was used for experimental v0.9.8.3 fork
+//    // Hack: only return 0.9.8.3 nodes; no 0.9.7.x, nor 0.9.5 nor 0.9.4 nor 0.9.2
+//    if (clientSubVersion.find(7) != std::string::npos ) return false;
+//    if (clientSubVersion.find(5) != std::string::npos ) {
+//                // Audit Trail of decisions, logging facility ....
+//                // printf("Rejecting old subversion: 9.5.\n");
+//                return false;
+//        };
+//    if (clientSubVersion.find(4) != std::string::npos ) return false;
+//    if (clientSubVersion.find(2) != std::string::npos ) return false;
+
 
     if (total <= 3 && success * 2 >= total) return true;
 
@@ -119,7 +173,10 @@ public:
   }
   int GetBanTime() const {
     if (IsGood()) return 0;
-    if (clientVersion && clientVersion < 31900) { return 604800; }
+    // Note: 1 week = 604800 seconds
+    // if (clientVersion && clientVersion < 31900) { return 604800; } // Bitcoin
+    //  Bitmark clientVersion ("Version") 90803  (previous cutoff: 90700 )
+    if (clientVersion && clientVersion < 90703) { return 604800; }   // Bitmark
     if (stat1M.reliability - stat1M.weight + 1.0 < 0.15 && stat1M.count > 32) { return 30*86400; }
     if (stat1W.reliability - stat1W.weight + 1.0 < 0.10 && stat1W.count > 16) { return 7*86400; }
     if (stat1D.reliability - stat1D.weight + 1.0 < 0.05 && stat1D.count > 8) { return 1*86400; }

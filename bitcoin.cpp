@@ -6,6 +6,13 @@
 #include "serialize.h"
 #include "uint256.h"
 
+/* 
+https://stackoverflow.com/questions/8809292/ull-suffix-on-a-numeric-literal
+
+ISO C99 supports data types for integers that are at least 64 bits wide, and as an extension GCC supports them in C90 mode and in C++. Simply write long long int for a signed integer, or unsigned long long int for an unsigned integer. To make an integer constant of type long long int, add the suffix LL to the integer. To make an integer constant of type unsigned long long int, add the suffix ULL to the integer.
+
+The C++11 standard dictates that a literal with U/u and LL/ll suffixes is a literal of type: unsigned long long int
+*/
 #define BITCOIN_SEED_NONCE  0x0539a019ca550825ULL
 
 using namespace std;
@@ -80,7 +87,7 @@ class CNode {
     CAddress me(CService("0.0.0.0"));
     BeginMessage("version");
     int nBestHeight = GetRequireHeight();
-    string ver = "/bitcoin-seeder:0.01/";
+    string ver = "/bitmark-seeder:0.01/";
     uint8_t fRelayTxs = 0;
     vSend << PROTOCOL_VERSION << nLocalServices << nTime << you << me << nLocalNonce << ver << nBestHeight << fRelayTxs;
     EndMessage();
@@ -208,7 +215,13 @@ public:
     vSend.SetVersion(0);
     vRecv.SetType(SER_NETWORK);
     vRecv.SetVersion(0);
-    if (time(NULL) > 1329696000) {
+/* 
+	https://www.epochconverter.com   
+	https://www.timeanddate.com/sun/france/paris?month=7&year=2014
+		Epoch timestamp: 1329696000 ~ Monday, February 20, 2012 12:00:00 AM
+		Epoch timestamp: 1405317660 ~ Monday, July 14,     2014  6:01:00 AM GMT 
+*/
+    if (time(NULL) > 1405317660 ) {
       vSend.SetVersion(209);
       vRecv.SetVersion(209);
     }
@@ -307,6 +320,7 @@ bool TestNode(const CService &cip, int &ban, int &clientV, std::string &clientSV
 /*
 int main(void) {
   CService ip("bitcoin.sipa.be", 8333, true);
+  CService ip("bitmark.let_it.be", 9265, true); // It's all just a comment anyway
   vector<CAddress> vAddr;
   vAddr.clear();
   int ban = 0;
