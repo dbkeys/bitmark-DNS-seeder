@@ -1,7 +1,7 @@
-bitcoin-seeder
+bitmark-seeder
 ==============
 
-Bitcoin-seeder is a crawler for the Bitcoin network, which exposes a list
+Bitmark-seeder is a crawler for the Bitmark network, which exposes a list
 of reliable nodes via a built-in DNS server.
 
 Features:
@@ -13,6 +13,9 @@ Features:
   1 day and 1 week, to base decisions on.
 * very low memory (a few tens of megabytes) and cpu requirements.
 * crawlers run in parallel (by default 24 threads simultaneously).
+
+        This seeder is based on the bitcoin seeder.
+        Many thanks, Peter Wuille !
 
 REQUIREMENTS
 ------------
@@ -47,6 +50,9 @@ $ make
 
 This will produce the `dnsseed` binary.
 
+$ make -j6
+
+Makes use of extra CPU's to speed compilation
 
 RUNNING AS NON-ROOT
 -------------------
@@ -60,3 +66,20 @@ $ iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 5353
 
 If properly configured, this will allow you to run dnsseed in userspace, using
 the -p 5353 option.
+
+
+UBUNTU
+------
+Recent Ubuntu versions have a DNS stub resolver with takes over port 53, and
+stop  seeder from answering queries. You must either de-activate the Ubuntu 
+stub resolver (systemd-resolved) or redirect external DNS quersies to a non-standard port: 
+
+    dnsseed.MARKS -h <sub-domain.domain.tld> -n <ip-address> -p 5353 -m <admin@email.com>
+
+and configure seeder to answer queries on that port:
+
+   srcPort=53
+   dstPort=5353
+   iptables -t nat -A PREROUTING -i eth0 -p tcp --dport $srcPort -j REDIRECT --to-port $dstPort
+   iptables -t nat -A PREROUTING -i eth0 -p udp --dport $srcPort -j REDIRECT --to-port $dstPort
+
