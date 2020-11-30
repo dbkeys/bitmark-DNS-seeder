@@ -71,7 +71,7 @@ the -p 5353 option.
 UBUNTU
 ------
 Recent Ubuntu versions have a DNS stub resolver with takes over port 53, and
-stop  seeder from answering queries. You must either de-activate the Ubuntu 
+stops seeder from seeing and answering queries. You must either de-activate the Ubuntu 
 stub resolver (systemd-resolved) or redirect external DNS quersies to a non-standard port: 
 
     dnsseed.MARKS -h <sub-domain.domain.tld> -n <ip-address> -p 5353 -m <admin@email.com>
