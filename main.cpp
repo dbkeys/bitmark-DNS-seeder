@@ -16,8 +16,8 @@ using namespace std;
 
 // [Major].[Minor].[Patch].[Build].[letter]
 // [0].[1].[1].[8].[a]
-// November 29, 2020: v0.1.1.1.a  for Bitmark v0.9.7.3
-const char* dnsseeder_version = "0.1.1.1.a\0x0";
+// November 29, 2020: v0.1.1.1.<letter>  for Bitmark v0.9.7.3
+const char* dnsseeder_version = "0.1.1.1.b\0x0";
 
 bool fTestNet = false;
 
@@ -512,7 +512,7 @@ int main(int argc, char **argv) {
     fprintf(stderr, "No e-mail address set. Please use -m.\n");
     exit(1);
   }
-  // TODO: Outpu file-name customizations ...
+  // TODO: Output file-name customizations ...
   FILE *f = fopen("dnsseed.dat","r");
   if (f) {
     printf("Loading dnsseed.dat...");
