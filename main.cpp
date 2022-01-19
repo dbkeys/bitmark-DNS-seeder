@@ -499,7 +499,7 @@ int main(int argc, char **argv) {
   opts.ParseCommandLine(argc, argv);
 
   initscr();
-  move(2,2);   printw("Bitmark DNS Seeder Monitor - v0.1.1.1bN\n");
+  move(2,2);   printw("Bitmark DNS Seeder Monitor - v0.1.1.1TN\n");
   move(6,62);  printw("DNS      db");
   move(7,7);   printw("Available   tried   in sec   new    active   Banned  Requests Queries");
   move(15,8);  printw("Supporting whitelisted filters: ");
