@@ -19,10 +19,15 @@ using namespace std;
 // [Major].[Minor].[Patch].[Build].[letter]
 // [0].[1].[1].[8].[a]
 // November 29, 2020: v0.1.1.1.a  for Bitmark v0.9.7.3
-const char* dnsseeder_version = "0.1.1.1.bN\0x0";
+const char* dnsseeder_version = "0.1.1.1.TN\0x0";
 
 bool fTestNet = false;
 
+clock_t run_start,run_now;
+double run_secs, running_time;
+int run_days, run_hours, run_minutes;
+
+	
 class CDnsSeedOpts {
 public:
   int nThreads;
@@ -404,7 +409,21 @@ extern "C" void* ThreadStats(void*) {
       requests += dnsThread[i]->dns_opt.nRequests;
       queries += dnsThread[i]->dbQueries;
     }
-    move(4,55); printw("%s",c);
+
+    // https://www.techiedelight.com/find-execution-time-c-program/
+    // Running Time
+    run_now = time(NULL);
+    running_time = (double) (run_now - run_start);
+    run_secs = running_time;
+    run_days = running_time / 86400; // 86,400 =(60*60*24);
+    running_time -= run_days * 86400;
+    run_hours = running_time / 3600;
+    running_time -= run_hours * 3600;
+    run_minutes = running_time / 60;
+    move(3,59); printw("%dd %dh %dm %.0fs",run_days, run_hours, run_minutes, running_time);
+    //move(4,55); printw("Up: %11.0f sec",run_secs);
+
+    move(2,55); printw("%s",c);
     move(8,9);  printw("%i/%i", stats.nGood, stats.nAvail);
     move(8,20); printw("%i", stats.nTracked);
     move(8,29); printw("%i", stats.nAge);
@@ -470,6 +489,10 @@ extern "C" void* ThreadSeeder(void*) {
 }
 
 int main(int argc, char **argv) {
+
+  // Running Time
+  run_start = time(NULL);
+
   signal(SIGPIPE, SIG_IGN);
   setbuf(stdout, NULL);
   CDnsSeedOpts opts;
