@@ -19,7 +19,8 @@ using namespace std;
 // [Major].[Minor].[Patch].[Build].[letter]
 // [0].[1].[1].[8].[a]
 // November 29, 2020: v0.1.1.1.a  for Bitmark v0.9.7.3
-const char* dnsseeder_version = "0.1.1.1.TN\0x0";
+// Fri Jun 23, 2023: v0.2.0.TN (latest sipa changes, nCurses)
+const char* dnsseeder_version = "0.2.0.SN\0x0";
 
 bool fTestNet = false;
 
@@ -512,7 +513,7 @@ int main(int argc, char **argv) {
   opts.ParseCommandLine(argc, argv);
 
   initscr();
-  move(2,2);   printw("Bitmark DNS Seeder Monitor - v0.1.1.1TN\n");
+  move(2,15);   printw("Bitmark DNS Seeder Monitor - v0.1.1.1TN\n");
   move(6,62);  printw("DNS      db");
   move(7,7);   printw("Available   tried   in sec   new    active   Banned  Requests Queries");
   move(15,8);  printw("Supporting whitelisted filters: ");
