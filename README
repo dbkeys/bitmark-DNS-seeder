@@ -104,3 +104,8 @@ and configure seeder to answer queries on that port:
    iptables -t nat -A PREROUTING -i eth0 -p tcp --dport $srcPort -j REDIRECT --to-port $dstPort
    iptables -t nat -A PREROUTING -i eth0 -p udp --dport $srcPort -j REDIRECT --to-port $dstPort
 
+
+DISPLAY
+-------
+
+Note that this branch, 'ncurses' makes use of the ncurses library to present a more organized display.
