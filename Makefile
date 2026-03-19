@@ -1,9 +1,15 @@
-CXXFLAGS = -O3 -g0 -march=native
-LDFLAGS = $(CXXFLAGS)
+CXX = g++
+CXXFLAGS = -O3 -g0 -march=native -std=c++11 -Wall -Wno-unused -Wno-sign-compare -Wno-reorder -Wno-comment
+LDFLAGS = -no-pie
+LDLIBS = -lcrypto -lncurses
 
-# Note: output executable file is name dnsseed.MARKS
+# Note: output executable file is named dnsseed.MARKS
 dnsseed: dns.o bitcoin.o netbase.o protocol.o db.o main.o util.o
-	g++ -pthread $(LDFLAGS) -o dnsseed.MARKS dns.o bitcoin.o netbase.o protocol.o db.o main.o util.o -lcrypto -lncurses
+	$(CXX) -pthread $(LDFLAGS) -o dnsseed.MARKS dns.o bitcoin.o netbase.o protocol.o db.o main.o util.o $(LDLIBS)
 
 %.o: %.cpp *.h
-	g++ -std=c++11 -pthread $(CXXFLAGS) -Wall -Wno-unused -Wno-sign-compare -Wno-reorder -Wno-comment -c -o $@ $<
+	$(CXX) -pthread $(CXXFLAGS) -c -o $@ $<
+
+clean:
+	rm -f *.o dnsseed.MARKS
+
